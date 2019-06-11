@@ -6,3 +6,5 @@ Critiq is a slack-integration that tackles this problem.
 
 Surveys can easily be created on our webpage - logins are not needed since users sign in directly via slack.
 Subsequently, the survey gets send out via slack, individually to each member of the channel that was selected. Each member can respond to each question directly in the private chat-window. The slackbot collects all responses anonymously and shows them on the dashboard of the web-application.
+
+www.critiq.dev
