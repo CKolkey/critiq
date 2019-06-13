@@ -1,3 +1,3 @@
 class ResponseController < ApplicationController
- # do we need the response controller?
+ # no new and create methods needed because of nested forms with cocoon gem
 end
