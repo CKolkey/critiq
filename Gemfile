@@ -18,13 +18,11 @@ gem 'webpacker'
 gem "pg_search"
 gem "numbers_and_words"
 
-
 # OAuth Related:
 gem 'omniauth'
 gem 'omniauth-slack'
 gem "cocoon"
 gem "attr_encrypted", "~> 3.1.0"
-
 
 # Bot Related:
 # gem 'slack-ruby-bot'
