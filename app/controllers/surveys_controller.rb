@@ -29,7 +29,6 @@ class SurveysController < ApplicationController
   end
 
   def show
-    # @questions = Survey.find(params[:id]).display_responses
     respond_to do |format|
       format.html { redirect_to surveys_path(id: params[:id]) }
       format.js
@@ -83,17 +82,6 @@ class SurveysController < ApplicationController
       render :edit
     end
   end
-
-  # new route for only save action
-  # def update_and_send
-  #   @survey = Survey.find(params[:id])
-  #   if @survey.update(survey_params)
-  #     @survey.send_first_question
-  #     redirect_to survey_path(@survey)
-  #   else
-  #     render :edit
-  #   end
-  # end
 
   def destroy
     @survey = Survey.find(params[:id])

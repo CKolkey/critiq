@@ -1,7 +1,10 @@
 Rails.application.routes.draw do
 
-  devise_for :users, :controllers => { :omniauth_callbacks => "callbacks" }
+  get '/auth/installbot', to: 'slack#installbot'
+  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
   root to: 'pages#home'
+
+  post '/api/events', to: 'slack#webhook'
 
   resources :surveys, only: [:index, :new, :create, :edit, :update, :show, :destroy] do
     resources :questions, only: [:new, :create, :show]
