@@ -39,14 +39,23 @@ class SlackController < ApplicationController
             )
 
         if x.save
-          # REDIRECT TO HOME PAGE AND FLASH MESSAGE THAT INSTALL WAS SUCESSFFULL
-          
+          # Install Sucessful, redirect to home page, flash message confirming sucess
+          flash[:notice] = 'Successfully Installed Ciritiq to your Workspace!'
+          redirect_to root_path
         else
-          # SOMETHING went wrong and the team wasnt created
-
+          # Something went wrong and the team wasnt created
+          flash[:notice] = "Something went wrong. It's likely you've already installed Critiq."
+          redirect_to root_path
         end
-
+      else
+        # Bad HTTP Response from POST
+        flash[:notice] = "Bad HTTP Response: Try again later."
+        redirect_to root_path
       end
+    else
+      # No OAuth Code in Params
+      flash[:notice] = "No oAuth code in parameters."
+      redirect_to root_path
     end
   end
 
