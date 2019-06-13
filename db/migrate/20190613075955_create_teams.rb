@@ -7,6 +7,7 @@ class CreateTeams < ActiveRecord::Migration[5.2]
       t.string :domain
       t.string :token
       t.string :bot_user_id
+      t.string :bot_access_token
       t.string :activated_user_id
       t.string :activated_user_access_token
       t.timestamps

@@ -20,6 +20,38 @@ class SlackController < ApplicationController
     # render json: {:status => 200}
   end
 
+  def installbot
+    if params[:code]
+      response = HTTParty.post("https://slack.com/api/oauth.access",
+        body: { client_id: ENV['SLACK_CLIENT_ID'],
+                client_secret: ENV['SLACK_CLIENT_SECRET'],
+                code: params[:code],
+                redirect_uri: 'http://localhost:3000/auth/installbot',
+                 })
+
+      if response["ok"]
+        x = Team.new(
+              team_id: response["team_id"],
+              name: response["team_name"],
+              token: response["access_token"],
+              bot_user_id: response["bot"]["bot_user_id"],
+              bot_access_token: response["bot"]["bot_access_token"]
+            )
+
+        if x.save
+          # REDIRECT TO HOME PAGE AND FLASH MESSAGE THAT INSTALL WAS SUCESSFFULL
+          
+        else
+          # SOMETHING went wrong and the team wasnt created
+
+        end
+
+      end
+    end
+  end
+
+  private
+
   def handle_url_verification(event)
     render json: { status: 200, challenge: event["challenge"] } and return
   end

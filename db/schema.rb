@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(version: 2019_06_13_075955) do
     t.string "domain"
     t.string "token"
     t.string "bot_user_id"
+    t.string "bot_access_token"
     t.string "activated_user_id"
     t.string "activated_user_access_token"
     t.datetime "created_at", null: false
