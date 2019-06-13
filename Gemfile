@@ -26,9 +26,9 @@ gem "cocoon"
 
 
 # Bot Related:
-gem 'slack-ruby-bot'
-gem 'slack-ruby-client'
-gem 'celluloid-io'
+# gem 'slack-ruby-bot'
+# gem 'slack-ruby-client'
+# gem 'celluloid-io'
 gem 'httparty'
 
 # Async Job Handling
