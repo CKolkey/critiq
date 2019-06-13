@@ -6,13 +6,15 @@ class User < ApplicationRecord
          :omniauthable, omniauth_providers: %i[slack]
 
   has_many :surveys
+  belongs_to :team
 
   def email_required?
     super && provider.blank?
   end
 
   def self.from_omniauth(auth)
-    where(provider: auth.provider, uid: auth.uid, team_id: auth.info.team_id).first_or_create do |user|
+    # TO DO: Connect team_id as foreign key to TEAM table
+    where(provider: auth.provider, uid: auth.uid, tid: auth.info.team_id).first_or_create do |user|
       user.provider = auth.provider
       if auth.info[:name].nil?
         user.first_name = auth.info[:user]
@@ -22,7 +24,8 @@ class User < ApplicationRecord
         user.last_name = auth.info[:name].split.last
       end
       user.uid = auth.uid
-      user.team_id = auth.info.team_id
+      user.tid = auth.info.team_id
+      user.team = Team.where(team_id: auth.info.team_id).first
       user.nickname = auth.info.nickname unless auth.info.nickname.nil?
       user.password = Devise.friendly_token[0,20]
     end

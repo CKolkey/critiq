@@ -23,6 +23,7 @@ gem "numbers_and_words"
 gem 'omniauth'
 gem 'omniauth-slack'
 gem "cocoon"
+gem "attr_encrypted", "~> 3.1.0"
 
 
 # Bot Related:
