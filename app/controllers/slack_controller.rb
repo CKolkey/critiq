@@ -23,11 +23,11 @@ class SlackController < ApplicationController
   def installbot
     if params[:code]
       response = HTTParty.post("https://slack.com/api/oauth.access",
-        body: { client_id: ENV['SLACK_CLIENT_ID'],
-                client_secret: ENV['SLACK_CLIENT_SECRET'],
-                code: params[:code],
-                redirect_uri: 'http://localhost:3000/auth/installbot',
-                 })
+                  body: { client_id: ENV['SLACK_CLIENT_ID'],
+                          client_secret: ENV['SLACK_CLIENT_SECRET'],
+                          code: params[:code],
+                          redirect_uri: 'http://localhost:3000/auth/installbot'
+                        })
 
       if response["ok"]
         x = Team.new(
@@ -68,6 +68,6 @@ class SlackController < ApplicationController
   def handle_event_callback(event)
     puts "> Ignoring Bot Event" if event["event"]["bot_id"]
     HandleSlackWebhookJob.perform_later(event: event) unless event["event"]["bot_id"]
-    render json: {:status => 200}
+    render json: { status: 200 }
   end
 end

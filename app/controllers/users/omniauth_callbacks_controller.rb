@@ -2,7 +2,9 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def slack
     # You need to implement the method below in your model (e.g. app/models/user.rb)
 
-    if Team.where(team_id: request.env["omniauth.auth"]["info"]["team_id"]).exists?
+    user_team = Team.where(team_id: request.env["omniauth.auth"]["info"]["team_id"])
+
+    if user_team.exists? && user_team.first.active
       @user = User.from_omniauth(request.env["omniauth.auth"])
 
       if @user.persisted?
