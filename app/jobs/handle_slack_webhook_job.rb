@@ -10,7 +10,7 @@ class HandleSlackWebhookJob < ApplicationJob
     # event_ts = args[0][:event]["event"]["event_ts"]
 
     msg_text = "Got it!"
-    send_slack_message(msg_text, channel)
+    send_slack_message(msg_text, channel, team_id)
 
   #   attached_sent_question = SentQuestion.where(recipent_slack_uid: user_id).last
   #   reply = Response.new(
@@ -47,11 +47,10 @@ class HandleSlackWebhookJob < ApplicationJob
   #   end
   end
 
-  def send_slack_message(msg_text, channel)
-    # Need to save API token for each team, and load that specific one here
+  def send_slack_message(msg_text, channel, team_id)
     HTTParty.post("https://slack.com/api/chat.postMessage",
       body: {
-        token: ENV["SLACK_BOT_OAUTH_TOKEN"],
+        token: Team.where(team_id: team_id).first.bot_access_token,
         as_user: true, # So it looks like the bot sent it
         channel: channel,
         text: msg_text,

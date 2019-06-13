@@ -21,6 +21,7 @@ class SlackController < ApplicationController
   end
 
   def installbot
+    # Handles oAuth path for adding critiq to workspaces
     if params[:code]
       response = HTTParty.post("https://slack.com/api/oauth.access",
                   body: { client_id: ENV['SLACK_CLIENT_ID'],
@@ -44,17 +45,17 @@ class SlackController < ApplicationController
           redirect_to root_path
         else
           # Something went wrong and the team wasnt created
-          flash[:notice] = "Something went wrong. It's likely you've already installed Critiq."
+          flash[:notice] = "I think Critiq is already installed to this workspace. Try loggin in!"
           redirect_to root_path
         end
       else
         # Bad HTTP Response from POST
-        flash[:notice] = "Bad HTTP Response: Try again later."
+        flash[:notice] = "Bad HTTP Response. Maybe it's Slack's fault? Try again later."
         redirect_to root_path
       end
     else
       # No OAuth Code in Params
-      flash[:notice] = "No oAuth code in parameters."
+      flash[:notice] = "No oAuth code in parameters. Don't know how you did this, but...don't?"
       redirect_to root_path
     end
   end
