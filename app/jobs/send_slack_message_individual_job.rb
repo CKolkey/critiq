@@ -4,8 +4,10 @@ class SendSlackMessageIndividualJob < ApplicationJob
   def perform(*args)
     puts ""
     puts "* Inside SendSlackMessageIndividual *"
+
     # Args: ARRAY of a HASH: Question_ID & target UID
     target_uid = args[0][:uid]
+    team = Team.find(args[0][:team_id])
 
     puts "> Finding Next Question after Question:id:#{args[0][:question_id]}"
     next_question = find_next_question(args[0][:question_id], args[0][:uid])
@@ -25,9 +27,9 @@ class SendSlackMessageIndividualJob < ApplicationJob
 
 
     if next_question != nil && next_question.question_type == 'radio'
-      send_message_multiple_choice(target_uid, next_question)
+      send_message_multiple_choice(target_uid, next_question, team)
     else
-      send_message(target_uid, question_text)
+      send_message(target_uid, question_text, team)
     end
 
     unless next_question.nil?
@@ -42,26 +44,26 @@ class SendSlackMessageIndividualJob < ApplicationJob
 
   private
 
-  def send_message(target_uid, text)
+  def send_message(target_uid, text, team)
     puts "> Sending regular message to #{target_uid}"
     HTTParty.post("https://slack.com/api/chat.postMessage",
       body: {
-        token: ENV["SLACK_API_TOKEN"],
+        token: team.bot_access_token,
         as_user: true, # So it looks like the bot sent it
         channel: target_uid, # Opens DM with user
         text: text,
         })
   end
 
-  def send_message_multiple_choice(target_uid, question)
+  def send_message_multiple_choice(target_uid, question, team)
     puts "> Sending MC message to #{target_uid}"
     question_text = "#{question.name}\n(Please respond with the number of your choice)"
-    send_message(target_uid, question_text)
+    send_message(target_uid, question_text, team)
 
     question.choices.each_with_index do |choice, index|
       puts "> Sending Choice no.#{index + 1}: '#{choice.name}'"
       choice_text = "#{index + 1}: #{choice.name}"
-      send_message(target_uid, choice_text)
+      send_message(target_uid, choice_text, team)
     end
   end
 
