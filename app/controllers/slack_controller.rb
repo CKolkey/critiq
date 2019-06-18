@@ -27,7 +27,7 @@ class SlackController < ApplicationController
                   body: { client_id: ENV['SLACK_CLIENT_ID'],
                           client_secret: ENV['SLACK_CLIENT_SECRET'],
                           code: params[:code],
-                          redirect_uri: 'http://localhost:3000/auth/installbot'
+                          redirect_uri: 'http://www.critiq.dev/auth/installbot'
                         })
 
       if response["ok"]
