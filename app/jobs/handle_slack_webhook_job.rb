@@ -26,32 +26,33 @@ class HandleSlackWebhookJob < ApplicationJob
                 sent_question_id: attached_sent_question.id,
                 question_id: attached_sent_question.question_id
               )
-    end
 
-    if attached_sent_question.question.question_type == "radio"
-      # if data.text.to_i == 0 then they sent NaN, 0 is not a valid choice either
-      # Checks if the sent int is inside the range of choices available
-      if (1..attached_sent_question.question.choices.count).include?(text.to_i) && !text.to_i.zero?
-        choice = attached_sent_question.question.choices[(text.to_i - 1)]
-        reply.choice_id = choice.id
-        reply.save!
+
+      if attached_sent_question.question.question_type == "radio"
+        # if data.text.to_i == 0 then they sent NaN, 0 is not a valid choice either
+        # Checks if the sent int is inside the range of choices available
+        if (1..attached_sent_question.question.choices.count).include?(text.to_i) && !text.to_i.zero?
+          choice = attached_sent_question.question.choices[(text.to_i - 1)]
+          reply.choice_id = choice.id
+          reply.save!
+        else
+          # Checks if there is already a reply to the last asked question
+          if attached_sent_question.question.responses.where(slack_uid: user.id).exists?
+            msg_text = "Hi? I didn't say anything."
+            send_slack_message(msg_text, channel, team)
+          else
+            # Respondent sent invalid Multiple Choice Question choice
+            msg_text = "I don't think that was one of the options. Choose a different one?"
+            send_slack_message(msg_text, channel, team)
+          end
+        end
       else
-        # Checks if there is already a reply to the last asked question
         if attached_sent_question.question.responses.where(slack_uid: user.id).exists?
-          msg_text = "Hi? I didn't say anything."
+          msg_text = "Hello...uh....I didn't say anything."
           send_slack_message(msg_text, channel, team)
         else
-          # Respondent sent invalid Multiple Choice Question choice
-          msg_text = "I don't think that was one of the options. Choose a different one?"
-          send_slack_message(msg_text, channel, team)
+          reply.save!
         end
-      end
-    else
-      if attached_sent_question.question.responses.where(slack_uid: user.id).exists?
-        msg_text = "Hello...uh....I didn't say anything."
-        send_slack_message(msg_text, channel, team)
-      else
-        reply.save!
       end
     end
   end
