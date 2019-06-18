@@ -17,6 +17,7 @@ class HandleSlackWebhookJob < ApplicationJob
     attached_sent_question = SentQuestion.where(recipent_slack_uid: user.uid).last
 
     if attached_sent_question.nil?
+      # Catches when someone messages the bot before it's sent them a question ever.
       msg_text = "Sorry? I haven't said anything."
       send_slack_message(msg_text, channel, team)
     else
