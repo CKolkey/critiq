@@ -3,8 +3,9 @@ class HandleSlackWebhookJob < ApplicationJob
 
   def perform(*args)
     event_hash = args[0][:event]
-    
+
     team = Team.where(team_id: event_hash["team_id"]).first
+    puts "user 1"
     user = User.where(uid: event_hash["event"]["user"], team_id: team.id).first
     text = event_hash["event"]["text"]
     channel = event_hash["event"]["channel"]
@@ -15,6 +16,7 @@ class HandleSlackWebhookJob < ApplicationJob
     # send_slack_message(msg_text, channel, team)
 
     attached_sent_question = SentQuestion.where(recipent_slack_uid: user.uid).last
+    puts "reply"
     reply = Response.new(
               content: text,
               slack_uid: user.uid,
@@ -27,6 +29,7 @@ class HandleSlackWebhookJob < ApplicationJob
       # Checks if the sent int is inside the range of choices available
       if (1..attached_sent_question.question.choices.count).include?(text.to_i) && !text.to_i.zero?
         choice = attached_sent_question.question.choices[(text.to_i - 1)]
+        puts "choice"
         reply.choice_id = choice.id
         reply.save!
       else
@@ -41,6 +44,7 @@ class HandleSlackWebhookJob < ApplicationJob
         end
       end
     else
+      puts "user 2"
       if attached_sent_question.question.responses.where(slack_uid: user.id).exists?
         msg_text = "Hello...uh....I didn't say anything."
         send_slack_message(msg_text, channel, team)
