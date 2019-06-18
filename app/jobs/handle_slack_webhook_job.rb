@@ -5,7 +5,6 @@ class HandleSlackWebhookJob < ApplicationJob
     event_hash = args[0][:event]
 
     team = Team.where(team_id: event_hash["team_id"]).first
-    puts "user 1"
     user = User.where(uid: event_hash["event"]["user"], team_id: team.id).first
     text = event_hash["event"]["text"]
     channel = event_hash["event"]["channel"]
@@ -16,20 +15,24 @@ class HandleSlackWebhookJob < ApplicationJob
     # send_slack_message(msg_text, channel, team)
 
     attached_sent_question = SentQuestion.where(recipent_slack_uid: user.uid).last
-    puts "reply"
-    reply = Response.new(
-              content: text,
-              slack_uid: user.uid,
-              sent_question_id: attached_sent_question.id,
-              question_id: attached_sent_question.question_id
-            )
+
+    if attached_sent_question.nil?
+      msg_text = "Sorry? I haven't said anything."
+      send_slack_message(msg_text, channel, team)
+    else
+      reply = Response.new(
+                content: text,
+                slack_uid: user.uid,
+                sent_question_id: attached_sent_question.id,
+                question_id: attached_sent_question.question_id
+              )
+    end
 
     if attached_sent_question.question.question_type == "radio"
       # if data.text.to_i == 0 then they sent NaN, 0 is not a valid choice either
       # Checks if the sent int is inside the range of choices available
       if (1..attached_sent_question.question.choices.count).include?(text.to_i) && !text.to_i.zero?
         choice = attached_sent_question.question.choices[(text.to_i - 1)]
-        puts "choice"
         reply.choice_id = choice.id
         reply.save!
       else
@@ -44,7 +47,6 @@ class HandleSlackWebhookJob < ApplicationJob
         end
       end
     else
-      puts "user 2"
       if attached_sent_question.question.responses.where(slack_uid: user.id).exists?
         msg_text = "Hello...uh....I didn't say anything."
         send_slack_message(msg_text, channel, team)

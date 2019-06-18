@@ -50,7 +50,7 @@ class SendSlackMessageAllJob < ApplicationJob
       end
 
       puts ">> Creating SentQuestion entry for Question: #{args[0][:question_id]}, User: #{member_uid}"
-      SentQuestion.create!(question_id: args[0][:question_id], recipent_slack_uid: member_uid)
+      SentQuestion.create(question_id: args[0][:question_id], recipent_slack_uid: member_uid)
 
     end
     puts "> Finished sending all messages <"
