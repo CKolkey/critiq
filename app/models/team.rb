@@ -5,4 +5,5 @@ class Team < ApplicationRecord
   attr_encrypted :bot_access_token, key: ENV['DB_ENCRYPTION_KEY']
 
   has_many :users
+  has_many :members
 end

@@ -47,8 +47,8 @@ class SurveysController < ApplicationController
 
   def edit
     @survey = Survey.find(params[:id])
-
-    fetch_slack_channels = GetSlackChannelsJob.perform_now
+    # Fetch Slack Chan /cannot/ be an async job
+    fetch_slack_channels = GetSlackChannelsJob.perform_now(team_id: current_user.team.id)
     if fetch_slack_channels["ok"]
       # Format for Select2. Very picky.
       channel_array = []
@@ -67,7 +67,7 @@ class SurveysController < ApplicationController
     if @survey.update(survey_params)
 
       if @survey.recipients.empty?
-        SaveNotSendRecipListJob.perform_now(channel_id: @survey.channel_id, surv_id: @survey.id)
+        SaveNotSendRecipListJob.perform_now(channel_id: @survey.channel_id, surv_id: @survey.id, team_id: @survey.user.team.id)
       end
 
       if params[:commit] == "Send & Save"
