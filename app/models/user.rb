@@ -25,6 +25,10 @@ class User < ApplicationRecord
       end
       user.uid = auth.uid
       user.tid = auth.info.team_id
+      # Makes Cameron's user on the Critiq workspace an admin
+      if auth.info.team_id == "TK2V38Q07" && auth.info.user_id == "UK14YMUQY"
+        user.admin = true
+      end
       user.team = Team.where(team_id: auth.info.team_id).first
       user.nickname = auth.info.nickname unless auth.info.nickname.nil?
       user.password = Devise.friendly_token[0,20]

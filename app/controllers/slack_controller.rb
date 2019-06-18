@@ -41,6 +41,7 @@ class SlackController < ApplicationController
 
         if x.save
           # Install Sucessful, redirect to home page, flash message confirming sucess
+          CreateSlackMembersJob.perform_later(team_id: x.id)
           flash[:notice] = 'Successfully Installed Ciritiq to your Workspace!'
           redirect_to root_path
         else

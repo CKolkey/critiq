@@ -5,7 +5,6 @@ class Bot < SlackRubyBot::Bot
   # end
   #
   command 'help' do |client, data, match|
-    # binding.pry
     client.say(channel: data.channel, text: "HELP: Thse are the following commands you have access to:")
     client.say(channel: data.channel, text: "HELP: None. Sorry.")
   end
