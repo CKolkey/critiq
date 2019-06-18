@@ -3,8 +3,7 @@ class HandleSlackWebhookJob < ApplicationJob
 
   def perform(*args)
     event_hash = args[0][:event]
-
-
+    
     team = Team.where(team_id: event_hash["team_id"]).first
     user = User.where(uid: event_hash["event"]["user"], team_id: team.id).first
     text = event_hash["event"]["text"]
