@@ -34,7 +34,7 @@ class SendSlackMessageIndividualJob < ApplicationJob
 
     unless next_question.nil?
       puts ">> Creating SentQuestion entry for Question: #{args[0][:question_id]}, User: #{target_uid}"
-      SentQuestion.create!(question_id: next_question.id, recipent_slack_uid: target_uid)
+      SentQuestion.create(question_id: next_question.id, recipent_slack_uid: target_uid)
     end
 
 
