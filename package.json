@@ -10,7 +10,7 @@
     "core-js": "3",
     "dropzone": "^5.5.1",
     "flatpickr": "^4.5.7",
-    "highlight.js": "^9.15.8",
+    "highlight.js": "^10.4.1",
     "highlightjs": "^9.12.0",
     "jquery": "^3.4.1",
     "jquery-mask-plugin": "^1.14.15",
